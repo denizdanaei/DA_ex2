@@ -2,7 +2,7 @@
 ***Warning***
  -already missed the deadline
  -prior
-#Assignment-Description:
+*Assignment-Description:*
     Implement Suzuki’s and Kasami’s algorithm for mutual exclusion in a distributed system with Java/RMI.
     Part 1:
  - Write the remote interface and the global framework of the Component class implementing the components of the distributed algorithm.
