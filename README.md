@@ -1,8 +1,8 @@
-#DA-ex2
+# DA-ex2
 
 Implement Suzuki’s and Kasami’s algorithm for mutual exclusion in a distributed system with Java/RMI.
 
-TODO
+## TODO
 - In Component.java
     - Functionality of registering and looking up components
     - Global framework of the Component class
@@ -18,7 +18,7 @@ TODO
 - Program
     - Output of the algorithm should it possible to check its correct operation.(wtf?)
 
-Material
+## Material
 - https://www.youtube.com/watch?v=aWne_qIR2XI
 - BrightSpace/Course Information/Course Description.pdf pg. 66
 - BrightSpace/Lectures/Chapter4/01-IN4150-mutual-exclusion-2019-2020.ppt
