@@ -10,8 +10,6 @@ public class Main{
     public static int numProcesses=2;
     public static void main(String[] args) {
 
-        System.out.println("Suzuki’s and Kasami’s algorithm for mutual exclusion in a distributed system");
-
         /**
          * GET the number of components from user AKA numProcesses
          * it should only be one arg, int, >0
@@ -49,7 +47,7 @@ public class Main{
         
         //create components and run threads
         for (int i = 0; i < numProcesses; i++){
-            
+
             myThreads[i].start();
         }
     }

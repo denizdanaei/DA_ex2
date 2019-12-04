@@ -39,7 +39,7 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
         try{
             Registry registry = LocateRegistry.getRegistry();
             registry.rebind(Integer.toString(id), this);
-            System.err.println("Component " + id + " is created\n\n");
+            System.err.println("Component " + id + " is created");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
@@ -66,28 +66,26 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
     public void sendRequest() throws MalformedURLException, RemoteException, NotBoundException {
         RN[id]++;
         // System.out.println("Sn="+Sn);
-        System.out.println("Component "+id+": RN= "+ Arrays.toString(RN));
-        System.out.println("Request Sent from "+ id);
+        System.out.println("Send from "+id+": RN= "+ Arrays.toString(RN));
+        // System.out.println("Request Sent from "+ id);
 
         for(int i=0;i<n;i++){
             if(i!=id){
                 Component_RMI reciever = (Component_RMI) Naming.lookup(Integer.toString(i));
-                System.out.println("to "+ i);
-                // System.out.println("\n\n");
                 reciever.receiveRequest(id, RN[id]);
             }
        }
     }
 
     public synchronized void receiveRequest (int src, int Sn){
-            System.out.println("Request Recieved at "+ id);
+            // System.out.println("Request Recieved at "+ id);
             if(RN[src]<Sn){
                 RN[src]++;
-                System.out.println("Request Accepted");
-                System.out.println("Component "+id+": RN= "+ Arrays.toString(RN));
+                System.out.println("Request Accepted at "+ id +": RN= "+ Arrays.toString(RN));
             }else{
-                System.out.println("Request is Outdated");}
-            System.out.println("\n\n");
+                System.out.println("Request is Outdated");
+            }
+            // System.out.println("\n\n");
 
     
     }
