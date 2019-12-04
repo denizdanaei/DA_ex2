@@ -51,11 +51,6 @@ Implement Suzuki’s and Kasami’s algorithm for mutual exclusion in a distribu
         - Y: push queue, go to [1]
         - N: idle till recieveRequest
 - pass tken
-**question** 
-
-*should it be a class?*
-
-*It is ONLY one object*
 
 ## Material
 - https://www.youtube.com/watch?v=aWne_qIR2XI
