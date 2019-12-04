@@ -6,11 +6,14 @@ Implement Suzuki’s and Kasami’s algorithm for mutual exclusion in a distribu
 - Main.java
     - Create the components *Done*
     - Create threads of the components *Done*
-    - It must be possible to specify the number of components
+    - It must be possible to specify the number of components *Done*
 - Component.java
-    - The functionality of registering and looking up components
+    - The functionality of registering *DONE* and looking up components *Done*
     - The global framework of the Component class *Done? I guess not completely*
-    - Implement broadcasting, receiving a request
+    - Implement broadcasting, receiving a request *Loading...*
+        - body of sendRequest and receiveRequest; *Done*
+            - RN[i] of the source will be incremented.
+            - in the sendRequest, all other components will receiveRequest
     - Include random delays in the CS and btw the finishing execution of CS and a new access request.
     - Implement token send and receive
 - [Token Implementation][1]
@@ -19,13 +22,12 @@ Implement Suzuki’s and Kasami’s algorithm for mutual exclusion in a distribu
 
 ## Problems
 
-- try/catch statment for main(String[] args)
+- try/catch statment for main(String[] args) *SOLVED with if-else statement for now*
 - Component.java:57: error: exception MalformedURLException is never thrown in body of corresponding try statement
             } catch (MalformedURLException | RemoteException | NotBoundException e) {
-    - it means these exceptions will never happen, is it because the code is not complete yet or something else?                
+    - it means these exceptions will never happen, is it because the code is not complete yet or something else? *SOLVED - was RMI shit *               
 
 ## TOKEN
-[1]:
 - The token is a true/false object
 - It has a queue and an array
 

@@ -13,6 +13,7 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
     public int id, n;
     public boolean isTokenHere;
     private int[] RN; //or public?
+    // private int Sn; //Sequence Number RN[id]=Sn
     /**
      * Component with id 0 is initialized with the token.
      * id = a number smaller than n
@@ -24,6 +25,7 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
         this.id=id;
         this.n=n;
         this.RN=new int[n];
+        // Sn = RN[id];
         if(id==0){this.isTokenHere=true;}
         else{this.isTokenHere=false;}
         //anything else?
@@ -37,7 +39,7 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
         try{
             Registry registry = LocateRegistry.getRegistry();
             registry.rebind(Integer.toString(id), this);
-            System.err.println("Component " + id + " is created");
+            System.err.println("Component " + id + " is created\n\n");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
@@ -52,20 +54,42 @@ public class Component extends UnicastRemoteObject implements Component_RMI, Run
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // try {
-            //     this.sendRequest();
-            // } catch (MalformedURLException | RemoteException | NotBoundException e) {
-            //     e.printStackTrace();
-            // }
+            try {
+                this.sendRequest();
+            }
+             catch (MalformedURLException | RemoteException | NotBoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void sendRequest(){
-        System.out.println("Request Sent");
+    public void sendRequest() throws MalformedURLException, RemoteException, NotBoundException {
+        RN[id]++;
+        // System.out.println("Sn="+Sn);
+        System.out.println("Component "+id+": RN= "+ Arrays.toString(RN));
+        System.out.println("Request Sent from "+ id);
+
+        for(int i=0;i<n;i++){
+            if(i!=id){
+                Component_RMI reciever = (Component_RMI) Naming.lookup(Integer.toString(i));
+                System.out.println("to "+ i);
+                // System.out.println("\n\n");
+                reciever.receiveRequest(id, RN[id]);
+            }
+       }
     }
 
-    public synchronized void receiveRequest (int id, int requestNumber){
-        System.out.println("Request Recieved!");
+    public synchronized void receiveRequest (int src, int Sn){
+            System.out.println("Request Recieved at "+ id);
+            if(RN[src]<Sn){
+                RN[src]++;
+                System.out.println("Request Accepted");
+                System.out.println("Component "+id+": RN= "+ Arrays.toString(RN));
+            }else{
+                System.out.println("Request is Outdated");}
+            System.out.println("\n\n");
+
+    
     }
     
     public synchronized void receiveToken(int[] grants){

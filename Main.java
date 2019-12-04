@@ -10,19 +10,21 @@ public class Main{
     public static int numProcesses=2;
     public static void main(String[] args) {
 
-        System.out.println("Hello World");
+        System.out.println("Suzuki’s and Kasami’s algorithm for mutual exclusion in a distributed system");
 
         /**
          * GET the number of components from user AKA numProcesses
          * it should only be one arg, int, >0
          * 
          */
-        for(String s : args){
-            
-            System.out.println(s);
-                        
-            }
-    
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Enter the Number of Components.");
+          }else if(args.length > 1){            
+            throw new IllegalArgumentException("Enter one Number Only!");
+          }
+            numProcesses=Integer.parseInt(args[0]);
+            System.out.println(numProcesses);
+                            
         // Create Registry        
         try{
             Registry registry = LocateRegistry.createRegistry(1099);
@@ -42,8 +44,15 @@ public class Main{
             } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }
         }
+        
+        
+        //create components and run threads
+        for (int i = 0; i < numProcesses; i++){
+            
+            myThreads[i].start();
+        }
+    }
 }
 
 
