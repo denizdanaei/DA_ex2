@@ -1,20 +1,45 @@
 
 public class Simulator {
-    public static void main(String[] args) {
 
-        // Create components
-        Component[] components = {
-            new Component(1, 3),
-            new Component(2, 3),
-            new Component(3, 3)
-        };
+    public Component[] components;
 
-        // Initialize token
-        components[0].initToken();
+    public Simulator(int nComponents) {
+        this.components = new Component[nComponents];
+        for (int i = 0; i < nComponents; i++) {
+            this.components[i] = new Component(i+1, nComponents);
+        }
+        this.components[0].initToken();
+    }
 
-        // Print state
+    public void request(int pid) {
+        System.out.println("P"+pid+" REQUEST");
+        int[] sequence = components[pid-1].requestToken();
+        for (Component c : components) {
+            if (c.id != pid) {
+                c.onRequest(sequence);
+            }
+        }
+        System.out.println();
+    }
+
+    public void run() {
+        // printState();
+        request(1);
+        request(2);
+        request(3);
+        System.out.println();
+        // printState();
+    }
+
+    public void printState() {
         for (Component c : components) {
             c.printStatus();
         }
+    }
+
+    public static void main(String[] args) {
+
+        Simulator sim = new Simulator(3);
+        sim.run();
     }
 }

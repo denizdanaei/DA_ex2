@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Component {
     
-    private int id;
+    public int id;
     private int[] RN;
     private Token token;
     private boolean criticalSection;
@@ -14,7 +14,18 @@ public class Component {
         this.criticalSection = false;
     }
 
+    public int[] requestToken() {
+        RN[id-1]++;
+        return RN;
+        // Broadcasting implemented in simulator
+    }
 
+    public void onRequest(int[] seq) {
+        System.out.println("P"+id+" received request: "+Arrays.toString(seq));
+    }
+
+
+    // Helper functions for simulation
     public void initToken() {
         this.token = new Token();
     }
