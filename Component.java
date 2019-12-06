@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Component implements ComponentIface {
     
-    public final int id;
+    private final int id;
     private int[] RN;
     private Token token;
     private boolean criticalSection;
@@ -30,18 +30,17 @@ public class Component implements ComponentIface {
         assert this.criticalSection == false;   // Safety check
         RN[id-1]++;
         for (ComponentIface c : componentList) {
-            c.onRequest(id, RN[id-1]);      // Bcast to everyone (including yourself)
+            c.onRequest(id, RN[id-1]);          // Broadcast to everyone
         }
     }
 
     public void onRequest(int pid, int seq) {
         // System.out.println("P"+this.id+" received request: (P"+pid+", "+seq+")");
-        
         RN[pid-1] = Math.max(RN[pid-1], seq);      // Update RN
         if (hasToken()) {
             token.updateQueue(RN);
             if (criticalSection && --csDelay == 0) releaseToken();
-            if (!criticalSection) sendToken();
+            if (!criticalSection && !token.isEmpty()) sendToken();
         }
     }
 
@@ -55,17 +54,14 @@ public class Component implements ComponentIface {
     public void releaseToken() {
         criticalSection = false;
         token.updateLN(id);
-        token.popRequest();
+        token.popFromQueue();
     }
 
     public void sendToken() {
-        if (!token.queue.isEmpty()) {
-            int dst = token.queue.peek();
-            componentList[dst-1].onTokenReceive(token);
-            if (dst != id) token = null;
-        } else {
-            System.out.println("Queue empty");
-        }
+        assert token.isEmpty() == false;
+        int dst = token.peekQueue();
+        componentList[dst-1].onTokenReceive(token);
+        if (dst != id) token = null;
     }
 
     // Helper functions for simulation ----------------------------------------

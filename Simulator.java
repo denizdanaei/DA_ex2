@@ -18,29 +18,31 @@ public class Simulator {
         this.components[0].initToken();
     }
 
-    public void request(int pid) {
-        request(pid, 0);
-    }
     public void request(int pid, int csDelay) {
-        System.out.println("P"+pid+" REQUEST");
+        if (csDelay > 0) System.out.println("P"+pid+" REQUEST "+"(CS = "+csDelay+")");
+        else System.out.println("P"+pid+" REQUEST");
         components[pid-1].setCSDelay(csDelay);      // Warning: fails if multiple pending request for the same proc
         components[pid-1].broadcastRequest();
     }
 
+    public void request(int pid) {
+        request(pid, 0);
+    }
+
+
     public void run() {
         // Hardcoded simulation
         request(1, 2);
-        printState();
+        // printState();
         request(2);
-        printState();
+        // printState();
         request(3);
-        printState();
+        // printState();
     }
 
     public void printState() {
-        for (ComponentIface c : components) {
-            c.printStatus();
-        }
+        System.out.println();
+        for (ComponentIface c : components) c.printStatus();
         System.out.println();
         System.out.println();
     }
