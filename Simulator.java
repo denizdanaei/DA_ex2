@@ -19,14 +19,17 @@ public class Simulator {
     }
 
     public void request(int pid) {
+        request(pid, 0);
+    }
+    public void request(int pid, int csDelay) {
         System.out.println("P"+pid+" REQUEST");
+        components[pid-1].setCSDelay(csDelay);      // Warning: fails if multiple pending request for the same proc
         components[pid-1].broadcastRequest();
-        
     }
 
     public void run() {
         // Hardcoded simulation
-        request(1);
+        request(1, 2);
         printState();
         request(2);
         printState();

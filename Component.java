@@ -6,6 +6,7 @@ public class Component implements ComponentIface {
     private int[] RN;
     private Token token;
     private boolean criticalSection;
+    private int csDelay;
     private ComponentIface[] componentList;
 
     public Component(int id, int nComponents) {
@@ -13,37 +14,60 @@ public class Component implements ComponentIface {
         this.RN = new int[nComponents];
         this.token = null;
         this.criticalSection = false;
+        this.csDelay = 0;
     }
 
     public int getId() {
         return this.id;
     }
 
+    public boolean hasToken() {
+        if (this.token != null) return true;
+        else return false;
+    }
+
     public void broadcastRequest() {
-        // Increase local RN and broadcast token request
+        assert this.criticalSection == false;   // Safety check
         RN[id-1]++;
         for (ComponentIface c : componentList) {
-            if (c.getId() != this.id) c.onRequest(this.id, this.RN[this.id-1]);
+            c.onRequest(id, RN[id-1]);      // Bcast to everyone (including yourself)
         }
     }
 
     public void onRequest(int pid, int seq) {
-        System.out.println("P"+this.id+" received request: (P"+pid+", "+seq+")");
-        RN[pid-1] = Math.max(RN[pid-1], seq);      // Update local RN
-        if (token != null) sendToken(pid);         // Send token
+        // System.out.println("P"+this.id+" received request: (P"+pid+", "+seq+")");
+        
+        RN[pid-1] = Math.max(RN[pid-1], seq);      // Update RN
+        if (hasToken()) {
+            token.updateQueue(RN);
+            if (criticalSection && --csDelay == 0) releaseToken();
+            if (!criticalSection) sendToken();
+        }
     }
 
     public void onTokenReceive(Token t) {
         this.token = t;
         this.criticalSection = true;
+        System.out.println("\tP"+id+" received token");
     }
 
-    public void sendToken(int pid) {
-        assert this.criticalSection == false;
-        componentList[pid-1].onTokenReceive(this.token);
-        this.token = null;
+    public void releaseToken() {
+        criticalSection = false;
+        token.updateLN(id);
+        // token.updateQueue(this.RN);
+        // also when do you pop yourself off the queue?
     }
 
+    public void sendToken() {
+        // token.updateQueue(this.RN);
+        if (!token.queue.isEmpty()) {
+            int dst = token.queue.peek();
+            componentList[dst-1].onTokenReceive(token);
+            if (dst != id) token = null;
+        } else {
+            System.out.println("Queue empty");
+        }
+    }
 
     // Helper functions for simulation ----------------------------------------
     public void initNetwork(ComponentIface[] components) {
@@ -51,7 +75,11 @@ public class Component implements ComponentIface {
     }
 
     public void initToken() {
-        this.token = new Token();
+        this.token = new Token(RN.length);
+    }
+
+    public void setCSDelay(int delay) {
+        this.csDelay = delay;
     }
 
     public void printStatus() {

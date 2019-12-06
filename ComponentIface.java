@@ -8,5 +8,6 @@ public interface ComponentIface {
     // Simulation helpers
     public void initToken();
     public void initNetwork(ComponentIface[] components);
+    public void setCSDelay(int delay);
     public void printStatus();
 }
