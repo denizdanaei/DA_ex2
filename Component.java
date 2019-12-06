@@ -30,23 +30,35 @@ public class Component implements ComponentIface {
     public void onRequest(int pid, int seq) {
         System.out.println("P"+this.id+" received request: (P"+pid+", "+seq+")");
         RN[pid-1] = Math.max(RN[pid-1], seq);      // Update local RN
+        if (token != null) sendToken(pid);         // Send token
+    }
+
+    public void onTokenReceive(Token t) {
+        this.token = t;
+        this.criticalSection = true;
+    }
+
+    public void sendToken(int pid) {
+        assert this.criticalSection == false;
+        componentList[pid-1].onTokenReceive(this.token);
+        this.token = null;
     }
 
 
     // Helper functions for simulation ----------------------------------------
-    public void initToken() {
-        this.token = new Token();
-    }
-
     public void initNetwork(ComponentIface[] components) {
         this.componentList = components;
+    }
+
+    public void initToken() {
+        this.token = new Token();
     }
 
     public void printStatus() {
         StringBuilder str = new StringBuilder();
         str.append("P"+id+" "+Arrays.toString(RN));
-        if (token != null) str.append("\thas token\t");
-        if (criticalSection) str.append("critical section");
+        if (token != null) str.append("\ttoken");
+        if (criticalSection) str.append("\tcritical");
         System.out.print(str.toString().indent(2));
     }
 }
