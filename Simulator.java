@@ -1,29 +1,40 @@
+import java.rmi.registry.LocateRegistry;
 
 public class Simulator {
 
     public ComponentIface[] components;
 
     public Simulator(int nComponents) {
-        
-        // Create components
-        this.components = new ComponentIface[nComponents];
-        for (int i = 0; i < nComponents; i++) {
-            this.components[i] = new Component(i+1, nComponents);
+
+        try {
+            // Get component stubs
+            this.components = new ComponentIface[nComponents];
+            for (int i = 0; i < nComponents; i++) {
+                this.components[i] = (ComponentIface) LocateRegistry.getRegistry().lookup(Integer.toString(i+1));
+            }
+            
+            // Distribute list of component stubs
+            for (ComponentIface c : components) c.initNetwork(this.components);
+
+            // Initialize token
+            this.components[0].initToken();
+
+        } catch (Exception e) {
+            System.out.println("Simulator exception "+e.toString());
         }
-        
-        // Distribute list of component stubs
-        for (ComponentIface c : components) c.initNetwork(this.components);
-        
-        // Init token
-        this.components[0].initToken();
     }
 
     // csDelay = number of request events
     public void request(int pid, int csDelay) {
         if (csDelay > 0) System.out.println("P"+pid+" REQUEST "+"(CS = "+csDelay+")");
         else System.out.println("P"+pid+" REQUEST");
-        components[pid-1].setCSDelay(csDelay);
-        components[pid-1].broadcastRequest();
+        try {
+            components[pid-1].setCSDelay(csDelay);
+            components[pid-1].broadcastRequest();
+
+        } catch (Exception e) {
+            System.out.println("Simulator exception @request "+e.toString());
+        }
     }
 
     public void request(int pid) {              // Convenience wrapper (for csDelay=0)
@@ -42,7 +53,11 @@ public class Simulator {
 
     public void printState() {
         System.out.println();
-        for (ComponentIface c : components) c.printStatus();
+        try {
+            for (ComponentIface c : components) c.printStatus();
+        } catch (Exception e) {
+            System.out.println("Simulator exception @printState "+e.toString());
+        }
         System.out.println();
         System.out.println();
     }

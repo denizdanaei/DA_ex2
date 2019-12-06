@@ -1,13 +1,16 @@
-public interface ComponentIface {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    public int getId();
-    public void broadcastRequest();
-    public void onRequest(int pid, int seq);
-    public void onTokenReceive(Token t);
+public interface ComponentIface extends Remote {
+
+    public int getId() throws RemoteException;
+    public void broadcastRequest() throws RemoteException;
+    public void onRequest(int pid, int seq) throws RemoteException;
+    public void onTokenReceive(Token t) throws RemoteException;
 
     // Simulation helpers
-    public void initToken();
-    public void initNetwork(ComponentIface[] components);
-    public void setCSDelay(int delay);
-    public void printStatus();
+    public void initToken() throws RemoteException;
+    public void initNetwork(ComponentIface[] components) throws RemoteException;
+    public void setCSDelay(int delay) throws RemoteException;
+    public void printStatus() throws RemoteException;
 }
