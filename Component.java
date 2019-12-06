@@ -46,20 +46,19 @@ public class Component implements ComponentIface {
     }
 
     public void onTokenReceive(Token t) {
+        System.out.println("P"+id+" received token");
         this.token = t;
         this.criticalSection = true;
-        System.out.println("\tP"+id+" received token");
+        if (csDelay == 0) releaseToken();
     }
 
     public void releaseToken() {
         criticalSection = false;
         token.updateLN(id);
-        // token.updateQueue(this.RN);
-        // also when do you pop yourself off the queue?
+        token.popRequest();
     }
 
     public void sendToken() {
-        // token.updateQueue(this.RN);
         if (!token.queue.isEmpty()) {
             int dst = token.queue.peek();
             componentList[dst-1].onTokenReceive(token);

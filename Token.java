@@ -1,5 +1,4 @@
 import java.util.Queue;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Token {
@@ -16,15 +15,14 @@ public class Token {
     }
 
     public void updateQueue(int[] RN) {
-        System.out.println("Updating queue");
+        System.out.print("Queue ");
         for (int i = 0; i < LN.length; i++) {
             if (RN[i] > LN[i] && !queue.contains(i+1)) queue.add(i+1);         // Can the difference ever be more than 1?
         }
         System.out.println(queue.toString());
     }
+
+    public void popRequest() {
+        queue.remove();
+    }
 }
-
-
-// System.out.println("RN "+Arrays.toString(RN));
-// System.out.println("LN "+Arrays.toString(LN));
-// System.out.println();
