@@ -1,11 +1,12 @@
 import java.util.Arrays;
 
-public class Component {
+public class Component implements ComponentIface {
     
     public final int id;
     private int[] RN;
     private Token token;
     private boolean criticalSection;
+    private ComponentIface[] componentList;
 
     public Component(int id, int nComponents) {
         this.id = id;
@@ -14,10 +15,16 @@ public class Component {
         this.criticalSection = false;
     }
 
-    public int requestToken() {
+    public int getId() {
+        return this.id;
+    }
+
+    public void broadcastRequest() {
+        // Increase local RN and broadcast token request
         RN[id-1]++;
-        return RN[id-1];
-        // Broadcasting implemented in simulator
+        for (ComponentIface c : componentList) {
+            if (c.getId() != this.id) c.onRequest(this.id, this.RN[this.id-1]);
+        }
     }
 
     public void onRequest(int pid, int seq) {
@@ -29,6 +36,10 @@ public class Component {
     // Helper functions for simulation ----------------------------------------
     public void initToken() {
         this.token = new Token();
+    }
+
+    public void initNetwork(ComponentIface[] components) {
+        this.componentList = components;
     }
 
     public void printStatus() {

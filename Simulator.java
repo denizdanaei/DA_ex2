@@ -1,24 +1,27 @@
 
 public class Simulator {
 
-    public Component[] components;
+    public ComponentIface[] components;
 
     public Simulator(int nComponents) {
-        this.components = new Component[nComponents];
+        
+        // Create components
+        this.components = new ComponentIface[nComponents];
         for (int i = 0; i < nComponents; i++) {
             this.components[i] = new Component(i+1, nComponents);
         }
+        
+        // Distribute list of component stubs
+        for (ComponentIface c : components) c.initNetwork(this.components);
+        
+        // Init token
         this.components[0].initToken();
     }
 
     public void request(int pid) {
         System.out.println("P"+pid+" REQUEST");
-        // Get sequence number and broadcast request
-        int sequence = components[pid-1].requestToken();
-        for (Component c : components) {
-            if (c.id != pid) c.onRequest(pid, sequence);
-        }
-        System.out.println();
+        components[pid-1].broadcastRequest();
+        
     }
 
     public void run() {
@@ -32,7 +35,7 @@ public class Simulator {
     }
 
     public void printState() {
-        for (Component c : components) {
+        for (ComponentIface c : components) {
             c.printStatus();
         }
         System.out.println();
