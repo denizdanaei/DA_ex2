@@ -13,22 +13,21 @@ public class Simulator {
 
     public void request(int pid) {
         System.out.println("P"+pid+" REQUEST");
-        int[] sequence = components[pid-1].requestToken();
+        // Get sequence number and broadcast request
+        int sequence = components[pid-1].requestToken();
         for (Component c : components) {
-            if (c.id != pid) {
-                c.onRequest(sequence);
-            }
+            if (c.id != pid) c.onRequest(pid, sequence);
         }
         System.out.println();
     }
 
     public void run() {
-        // printState();
+        // Hardcoded simulation
         request(1);
         request(2);
         request(3);
         System.out.println();
-        // printState();
+        printState();
     }
 
     public void printState() {
@@ -38,7 +37,6 @@ public class Simulator {
     }
 
     public static void main(String[] args) {
-
         Simulator sim = new Simulator(3);
         sim.run();
     }
