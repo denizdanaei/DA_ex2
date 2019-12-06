@@ -22,7 +22,7 @@ public class Component {
 
     public void onRequest(int pid, int seq) {
         System.out.println("P"+this.id+" received request: (P"+pid+", "+seq+")");
-        this.RN[pid-1] = Math.max(1, seq);      // Update local RN
+        RN[pid-1] = Math.max(RN[pid-1], seq);      // Update local RN
     }
 
 
@@ -32,11 +32,10 @@ public class Component {
     }
 
     public void printStatus() {
-        System.out.println("P"+id);
-        System.out.println(Arrays.toString(RN));
-        if (token == null) System.out.println("no token");
-        else System.out.println("has token");
-        if (criticalSection ) System.out.println("critical section");
-        else System.out.println("not critical section\n");
+        StringBuilder str = new StringBuilder();
+        str.append("P"+id+" "+Arrays.toString(RN));
+        if (token != null) str.append("\thas token\t");
+        if (criticalSection) str.append("critical section");
+        System.out.print(str.toString().indent(2));
     }
 }

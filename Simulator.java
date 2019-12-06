@@ -24,9 +24,10 @@ public class Simulator {
     public void run() {
         // Hardcoded simulation
         request(1);
+        printState();
         request(2);
+        printState();
         request(3);
-        System.out.println();
         printState();
     }
 
@@ -34,6 +35,8 @@ public class Simulator {
         for (Component c : components) {
             c.printStatus();
         }
+        System.out.println();
+        System.out.println();
     }
 
     public static void main(String[] args) {
