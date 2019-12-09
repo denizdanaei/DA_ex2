@@ -1,7 +1,8 @@
 import java.util.Queue;
 import java.util.LinkedList;
+import java.io.Serializable;
 
-public class Token implements java.io.Serializable {
+public class Token implements Serializable {
 
     private int[] LN;
     private Queue<Integer> queue;

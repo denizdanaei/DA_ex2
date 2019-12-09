@@ -45,7 +45,11 @@ public class Component implements ComponentIface {
         RN[pid-1] = Math.max(RN[pid-1], seq);      // Update RN
         if (hasToken()) {
             token.updateQueue(RN);
-            if (criticalSection && --csDelay == 0) releaseToken();
+            if (criticalSection) {
+                if (pid != id) csDelay--;
+                // System.out.println("P"+id+" CS Delay "+csDelay);
+                if (csDelay == 0) releaseToken();
+            }
             if (!criticalSection && !token.isEmpty()) sendToken();
         }
     }

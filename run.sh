@@ -32,4 +32,4 @@ done
 sleep 0.5
 
 # Run simulator
-java Simulator
+java Simulator $1
