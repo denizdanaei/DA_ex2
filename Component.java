@@ -35,7 +35,6 @@ public class Component implements ComponentIface {
         for (ComponentIface c : componentList) {
             try {
                 if (c.getId() != this.id) c.onRequest(id, RN[id-1]);
-                // c.onRequest(id, RN[id-1]);
             } catch (Exception e) {
                 System.out.println("Exception @broadcast "+e.toString());
             }
@@ -46,26 +45,12 @@ public class Component implements ComponentIface {
         RN[pid-1] = Math.max(RN[pid-1], seq);      // Update RN
         if (hasToken()) {
             token.updateQueue(RN);
-            if (!criticalSection) {                // Send token if not in CS
-                try {
-                    int dst = token.peekQueue();
-                    componentList[dst-1].onTokenReceive(token);
-                    token = null;
-                } catch (Exception e) {
-                    System.out.println("Exception @sendToken "+e.toString());
-                }
-            } else {                               // Simulate CS otherwise
-                csDelay--;
-                if (csDelay == 0) {
-                    criticalSection = false;
-                    token.updateLN(id);
-                    token.popFromQueue();
-                    if (!token.isEmpty()) sendToken();
-                }
+            if (!criticalSection) sendToken();
+            else {
+                if (--csDelay == 0) releaseToken();
             }
         }
     }
-    // System.out.println("P"+id+" CS Delay "+csDelay);
 
     public void onTokenReceive(Token t) {
         System.out.println("P"+id+" received token");
@@ -78,10 +63,10 @@ public class Component implements ComponentIface {
         criticalSection = false;
         token.updateLN(id);
         token.popFromQueue();
+        if (!token.isEmpty()) sendToken();
     }
 
     public void sendToken() {
-        assert token.isEmpty() == false;
         int dst = token.peekQueue();
         try {
             componentList[dst-1].onTokenReceive(token);
