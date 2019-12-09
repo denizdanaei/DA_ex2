@@ -22,9 +22,7 @@ public class Simulator {
     // csDelay = number of request events
     public void request(int pid, int csDelay) {
         System.out.println();
-        if (csDelay > 0) System.out.println("P"+pid+" REQUEST "+"(CS = "+csDelay+")");
-        else System.out.println("P"+pid+" REQUEST");
-
+        System.out.println("P"+pid+" REQUEST");
         try {
             components[pid-1].setCSDelay(csDelay);
             components[pid-1].broadcastRequest();
@@ -44,7 +42,7 @@ public class Simulator {
         // request(2);
         // // printState();
         // request(3);
-        // // printState();
+        // // // printState();
 
         // Another example
         request(2, 2);
