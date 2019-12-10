@@ -35,35 +35,29 @@ public class Simulator {
         request(pid, 0);
     }
 
-    public void run() {
-        // Hardcoded simulation
-        // request(1, 2);
-        // // printState();
-        // request(2);
-        // // printState();
-        // request(3);
-        // // // printState();
-
-        // Another example
-        request(2, 2);
-        printState();
+    public void example1() {
         request(1, 2);
-        printState();
+        request(2);
+        request(3);
+    }
+
+    public void example2() {
+        request(2, 2);
+        request(1, 2);
         request(3);
         request(4);
         request(5);
-        printState();
     }
 
     public void printState() {
-        // System.out.println();
-        // try {
-        //     for (ComponentIface c : components) c.printStatus();
-        // } catch (Exception e) {
-        //     System.out.println("Simulator exception @printState "+e.toString());
-        // }
-        // System.out.println();
-        // System.out.println();
+        System.out.println();
+        try {
+            for (ComponentIface c : components) c.printStatus();
+        } catch (Exception e) {
+            System.out.println("Simulator exception @printState "+e.toString());
+        }
+        System.out.println();
+        System.out.println();
     }
 
     public static void main(String[] args) {
@@ -72,6 +66,7 @@ public class Simulator {
             System.exit(1);
         }
         Simulator sim = new Simulator(Integer.parseInt(args[0]));
-        sim.run();
+        // sim.example1();
+        sim.example2();
     }
 }

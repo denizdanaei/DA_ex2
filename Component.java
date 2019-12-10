@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -30,15 +29,19 @@ public class Component implements ComponentIface {
     }
 
     public void broadcastRequest() {
-        assert this.criticalSection == false;   // Safety check
         RN[id-1]++;
-        for (ComponentIface c : componentList) {
-            try {
-                if (c.getId() != this.id) c.onRequest(id, RN[id-1]);
-            } catch (Exception e) {
-                System.out.println("Exception @broadcast "+e.toString());
+        if (!hasToken()) {
+            for (ComponentIface c : componentList) {        // Broadcast token request
+                try {
+                    if (c.getId() != this.id) c.onRequest(id, RN[id-1]);
+                } catch (Exception e) {
+                    System.out.println("Exception @broadcast "+e.toString());
+                }
             }
-        }
+        } else {    // Corner case (already possesing token)
+            token.updateQueue(RN);
+            onTokenReceive(this.token);
+        }        
     }
 
     public void onRequest(int pid, int seq) {
@@ -53,7 +56,7 @@ public class Component implements ComponentIface {
     }
 
     public void onTokenReceive(Token t) {
-        System.out.println("P"+id+" received token");
+        System.out.println("\nP"+id+" TOKEN");
         this.token = t;
         this.criticalSection = true;
         if (csDelay == 0) releaseToken();
